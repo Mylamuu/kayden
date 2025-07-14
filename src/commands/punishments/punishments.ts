@@ -1,10 +1,22 @@
-const builder = new SlashCommandBuilder()
-	.setName("punishment")
-	.setDescription("Create, modify or remove punishments for your guild");
+import {
+	EmbedBuilder,
+	PermissionsBitField,
+	SlashCommandBuilder,
+} from "discord.js";
+import { container, inject } from "tsyringe";
+import { Command } from "../../decorators/command";
+import {
+	CommandToken,
+	type GuildChatInputCommandInteraction,
+	type ICommand,
+} from "../../interfaces/command";
+import { GuildService } from "../../services/guild";
 
 @Command()
-export class HelpCommand implements ICommand<typeof builder> {
-	public readonly builder = builder;
+export class HelpCommand implements ICommand {
+	public readonly builder = new SlashCommandBuilder()
+		.setName("punishment")
+		.setDescription("Create, modify or remove punishments for your guild");
 	public readonly permissions = new PermissionsBitField(["SendMessages"]);
 
 	constructor(@inject(GuildService) private guilds: GuildService) {}
@@ -14,8 +26,7 @@ export class HelpCommand implements ICommand<typeof builder> {
 	): Promise<void> {
 		const guildConfig = await this.guilds.get(interaction.guildId);
 
-		const commands: ICommand<SlashCommandOptionsOnlyBuilder>[] =
-			container.resolveAll(CommandToken);
+		const commands: ICommand[] = container.resolveAll(CommandToken);
 
 		const message = commands
 			.map(

@@ -9,19 +9,17 @@ import type {
 	ICommand,
 } from "../interfaces/command";
 
-const builder = new SlashCommandBuilder()
-	.setName("user-info")
-	.setDescription("Get the information of a user")
-	.addUserOption((opt) =>
-		opt
-			.setName("target")
-			.setDescription("The user to get the information of")
-			.setRequired(false),
-	);
-
 @Command()
-export class UserInfoCommand implements ICommand<typeof builder> {
-	public readonly builder = builder;
+export class UserInfoCommand implements ICommand {
+	public readonly builder = new SlashCommandBuilder()
+		.setName("user-info")
+		.setDescription("Get the information of a user")
+		.addUserOption((opt) =>
+			opt
+				.setName("target")
+				.setDescription("The user to get the information of")
+				.setRequired(false),
+		);
 	public readonly permissions = new PermissionsBitField(["SendMessages"]);
 	public readonly cooldownMs = 10_000;
 

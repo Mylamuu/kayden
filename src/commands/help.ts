@@ -2,7 +2,6 @@ import {
 	EmbedBuilder,
 	PermissionsBitField,
 	SlashCommandBuilder,
-	type SlashCommandOptionsOnlyBuilder,
 } from "discord.js";
 import { container, inject } from "tsyringe";
 import { Command } from "../decorators/command";
@@ -13,13 +12,11 @@ import {
 } from "../interfaces/command";
 import { GuildService } from "../services/guild";
 
-const builder = new SlashCommandBuilder()
-	.setName("help")
-	.setDescription("List every command (this is just a test)");
-
 @Command()
-export class HelpCommand implements ICommand<typeof builder> {
-	public readonly builder = builder;
+export class HelpCommand implements ICommand {
+	public readonly builder = new SlashCommandBuilder()
+		.setName("help")
+		.setDescription("List every command (this is just a test)");
 	public readonly permissions = new PermissionsBitField(["SendMessages"]);
 
 	constructor(@inject(GuildService) private guilds: GuildService) {}
@@ -29,8 +26,7 @@ export class HelpCommand implements ICommand<typeof builder> {
 	): Promise<void> {
 		const guildConfig = await this.guilds.get(interaction.guildId);
 
-		const commands: ICommand<SlashCommandOptionsOnlyBuilder>[] =
-			container.resolveAll(CommandToken);
+		const commands: ICommand[] = container.resolveAll(CommandToken);
 
 		const message = commands
 			.map(

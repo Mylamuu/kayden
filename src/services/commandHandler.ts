@@ -16,19 +16,16 @@ import { LoggerService } from "./logger";
 
 @singleton()
 export class CommandHandler {
-	private readonly commands: Map<
-		string,
-		ICommand<SlashCommandOptionsOnlyBuilder>
-	>;
+	private readonly commands: Map<string, ICommand>;
 
 	constructor(
 		@inject("DiscordClient") private readonly client: Client,
 		@inject(LoggerService) private readonly logger: LoggerService,
 		@inject(CooldownService) private cooldown: CooldownService,
 		@injectAll(CommandToken)
-		commands: ICommand<SlashCommandOptionsOnlyBuilder>[],
+		commands: ICommand[],
 	) {
-		this.commands = new Map<string, ICommand<SlashCommandOptionsOnlyBuilder>>();
+		this.commands = new Map<string, ICommand>();
 		for (const command of commands) {
 			this.commands.set(command.builder.name, command);
 		}
@@ -46,7 +43,9 @@ export class CommandHandler {
 			}
 
 			try {
-				await this.handleCommand(interaction as GuildChatInputCommandInteraction);
+				await this.handleCommand(
+					interaction as GuildChatInputCommandInteraction,
+				);
 			} catch (err: unknown) {
 				interaction.editReply("There was an error!");
 				this.logger.error("Unable to execute command", err);
@@ -79,8 +78,8 @@ export class CommandHandler {
 
 	private async executeWithCooldown(
 		interaction: GuildChatInputCommandInteraction,
-		command: ICommand<SlashCommandOptionsOnlyBuilder>,
-		subcommand?: ISubcommand<SlashCommandSubcommandBuilder>,
+		command: ICommand,
+		subcommand?: ISubcommand,
 	) {
 		if (!interaction.guild.members.me?.permissions.has(command.permissions)) {
 			return interaction.reply({
@@ -90,7 +89,8 @@ export class CommandHandler {
 		}
 
 		if (command.cooldownMs || subcommand?.cooldownMs) {
-			const cooldownLengthMs = subcommand?.cooldownMs || command.cooldownMs || 0;
+			const cooldownLengthMs =
+				subcommand?.cooldownMs || command.cooldownMs || 0;
 
 			if (cooldownLengthMs > 0) {
 				const result = await this.cooldown.check(
