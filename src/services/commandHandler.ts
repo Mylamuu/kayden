@@ -14,13 +14,13 @@ export class CommandHandler {
 	) {
 		this.commands = new Map<string, ICommand>();
 		for (const command of commands) {
-			this.commands.set(command.name, command);
+			this.commands.set(command.builder.name, command);
 		}
 	}
 
 	public initialise() {
 		this.client.on("interactionCreate", async (interaction) => {
-			if (!interaction.isCommand()) return;
+			if (!interaction.isChatInputCommand()) return;
 
 			if (!interaction.inGuild() || !interaction.guild?.members.me) {
 				return interaction.reply({

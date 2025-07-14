@@ -19,10 +19,7 @@ export class SlashCommandRegistrar {
 	}
 
 	public async registerCommands() {
-		const commandPayload = this.commands.map((c) => ({
-			name: c.name,
-			description: c.description,
-		}));
+		const commandPayload = this.commands.map((c) => c.builder.toJSON());
 
 		try {
 			this.logger.info("Started refreshing application (/) commands.");
