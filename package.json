@@ -1,20 +1,21 @@
 {
-  "name": "kayden",
-  "module": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "bun run --watch src/index.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "discord.js": "^14.21.0",
-    "reflect-metadata": "^0.2.2",
-    "tsyringe": "^4.10.0",
-    "winston": "^3.17.0"
-  }
+	"name": "kayden",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "bun run --watch src/index.ts"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.1.1",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"discord.js": "^14.21.0",
+		"reflect-metadata": "^0.2.2",
+		"tsyringe": "^4.10.0",
+		"winston": "^3.17.0"
+	}
 }

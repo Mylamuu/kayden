@@ -16,10 +16,7 @@
 
 	"customizations": {
 		"vscode": {
-			"extensions": [
-				"PKief.material-icon-theme",
-				"biomejs.biome"
-			]
+			"extensions": ["PKief.material-icon-theme", "biomejs.biome"]
 		}
 	}
 }
