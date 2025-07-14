@@ -19,11 +19,15 @@ export interface ICommandCooldown<T extends SlashCommandOptionsOnlyBuilder> {
 	};
 }
 
+export type GuildChatInputCommandInteraction = ChatInputCommandInteraction<
+	"raw" | "cached"
+>;
+
 export interface ICommand<T extends SlashCommandOptionsOnlyBuilder> {
 	builder: T;
 	permissions: PermissionsBitField;
 	cooldown?: ICommandCooldown<T>;
-	execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+	execute: (interaction: GuildChatInputCommandInteraction) => Promise<void>;
 }
 
 export const CommandToken = Symbol("ICommand");

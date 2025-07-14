@@ -1,11 +1,14 @@
 import {
-	type ChatInputCommandInteraction,
 	EmbedBuilder,
 	PermissionsBitField,
 	SlashCommandBuilder,
 } from "discord.js";
 import { Command } from "../decorators/command";
-import type { ICommand, ICommandCooldown } from "../interfaces/command";
+import type {
+	GuildChatInputCommandInteraction,
+	ICommand,
+	ICommandCooldown,
+} from "../interfaces/command";
 
 const builder = new SlashCommandBuilder()
 	.setName("user-info")
@@ -26,7 +29,7 @@ export class UserInfoCommand implements ICommand<typeof builder> {
 	};
 
 	public async execute(
-		interaction: ChatInputCommandInteraction,
+		interaction: GuildChatInputCommandInteraction,
 	): Promise<void> {
 		const target =
 			interaction.options.getUser("target", false) ?? interaction.user;
