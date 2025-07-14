@@ -1,6 +1,16 @@
-import type { Client, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import type {
+	ChatInputCommandInteraction,
+	Client,
+	SlashCommandOptionsOnlyBuilder,
+	SlashCommandSubcommandBuilder,
+} from "discord.js";
 import { inject, injectAll, singleton } from "tsyringe";
-import { CommandToken, type ICommand } from "../interfaces/command";
+import {
+	CommandToken,
+	type GuildChatInputCommandInteraction,
+	type ICommand,
+	type ISubcommand,
+} from "../interfaces/command";
 import { CooldownService } from "./cooldown";
 import { LoggerService } from "./logger";
 
@@ -36,54 +46,77 @@ export class CommandHandler {
 			}
 
 			try {
-				const command = this.commands.get(interaction.commandName);
-				if (!command) {
-					interaction.editReply("Command by that name was not found");
-					return;
-				}
-
-				if (
-					!interaction.guild.members.me.permissions.has(command.permissions)
-				) {
-					return interaction.reply({
-						content: "I don't have permission to run this command :(",
-						ephemeral: true,
-					});
-				}
-
-				if (command.cooldown) {
-					const subcommand =
-						interaction.options.getSubcommand(false) ?? undefined;
-					const cooldownLengthMs =
-						(subcommand && command.cooldown.subcommands?.[subcommand]) ||
-						command.cooldown.lengthMs ||
-						0;
-
-					if (cooldownLengthMs > 0) {
-						const result = await this.cooldown.check(
-							interaction.user.id,
-							interaction.commandName,
-							cooldownLengthMs,
-							subcommand,
-						);
-
-						if (result.onCooldown) {
-							await interaction.reply({
-								content: `You are on cooldown for another ${Math.ceil(result.remainingMs / 1000)} seconds.`,
-								ephemeral: true,
-							});
-
-							return;
-						}
-					}
-				}
-
-				await interaction.deferReply();
-				await command.execute(interaction);
+				await this.handleCommand(interaction);
 			} catch (err: unknown) {
 				interaction.editReply("There was an error!");
 				this.logger.error("Unable to execute command", err);
 			}
 		});
+	}
+
+	private async handleCommand(interaction: GuildChatInputCommandInteraction) {
+		const command = this.commands.get(interaction.commandName);
+		if (!command) {
+			interaction.editReply("Command by that name was not found");
+			return;
+		}
+
+		const subcommandName = interaction.options.getSubcommand(false);
+
+		if (subcommandName && command.subcommands) {
+			const subcommand = command.subcommands.find(
+				(sc) => sc.builder.name === subcommandName,
+			);
+
+			if (subcommand) {
+				await this.executeWithCooldown(interaction, command, subcommand);
+				return;
+			}
+		}
+
+		await this.executeWithCooldown(interaction, command);
+	}
+
+	private async executeWithCooldown(
+		interaction: GuildChatInputCommandInteraction,
+		command: ICommand<SlashCommandOptionsOnlyBuilder>,
+		subcommand?: ISubcommand<SlashCommandSubcommandBuilder>,
+	) {
+		// if (!interaction.guild.members.me.permissions.has(command.permissions)
+		// 		) {
+		// 			return interaction.reply({
+		// 				content: "I don't have permission to run this command :(",
+		// 				ephemeral: true,
+		// 			});
+		// 		}
+
+		if (command.cooldown) {
+			const cooldownLengthMs =
+				(subcommand &&
+					command.cooldown.subcommands?.[subcommand.builder.name]) ||
+				command.cooldown.lengthMs ||
+				0;
+
+			if (cooldownLengthMs > 0) {
+				const result = await this.cooldown.check(
+					interaction.user.id,
+					interaction.commandName,
+					cooldownLengthMs,
+					subcommand?.builder.name,
+				);
+
+				if (result.onCooldown) {
+					await interaction.reply({
+						content: `You are on cooldown for another ${Math.ceil(result.remainingMs / 1000)} seconds.`,
+						ephemeral: true,
+					});
+
+					return;
+				}
+			}
+		}
+
+		await interaction.deferReply();
+		await command.execute(interaction);
 	}
 }

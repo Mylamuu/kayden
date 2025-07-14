@@ -23,10 +23,16 @@ export type GuildChatInputCommandInteraction = ChatInputCommandInteraction<
 	"raw" | "cached"
 >;
 
+export interface ISubcommand<T extends SlashCommandSubcommandBuilder> {
+	builder: T;
+	execute: (interaction: GuildChatInputCommandInteraction) => Promise<void>;
+}
+
 export interface ICommand<T extends SlashCommandOptionsOnlyBuilder> {
 	builder: T;
 	permissions: PermissionsBitField;
 	cooldown?: ICommandCooldown<T>;
+	subcommands?: ISubcommand<SlashCommandSubcommandBuilder>[];
 	execute: (interaction: GuildChatInputCommandInteraction) => Promise<void>;
 }
 
