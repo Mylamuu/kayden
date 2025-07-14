@@ -24,6 +24,7 @@
 		"noPropertyAccessFromIndexSignature": false,
 		// TypeORM / TSyringe
 		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true
+		"emitDecoratorMetadata": true,
+		"strictPropertyInitialization": false
 	}
 }

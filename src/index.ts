@@ -6,13 +6,15 @@ import { SlashCommandRegistrar } from "./services/commandRegister";
 import { LoggerService } from "./services/logger";
 
 import "./commands";
+import { DatabaseService } from "./services/database";
 
 async function main() {
 	const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 	container.registerInstance("DiscordClient", client);
 
+	const logger = container.resolve(LoggerService);
+
 	client.once("ready", async () => {
-		const logger = container.resolve(LoggerService);
 		const registrar = container.resolve(SlashCommandRegistrar);
 		const handler = container.resolve(CommandHandler);
 
@@ -22,7 +24,10 @@ async function main() {
 		handler.initialise();
 	});
 
-	await client.login(process.env.DISCORD_TOKEN);
+	const database = container.resolve(DatabaseService);
+	database
+		.initialize()
+		.then(async () => await client.login(process.env.DISCORD_TOKEN));
 }
 
 main().catch(console.error);

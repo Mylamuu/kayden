@@ -1,18 +1,24 @@
-import type { Client } from "discord.js";
+import type { Client, SlashCommandOptionsOnlyBuilder } from "discord.js";
 import { inject, injectAll, singleton } from "tsyringe";
 import { CommandToken, type ICommand } from "../interfaces/command";
+import { CooldownService } from "./cooldown";
 import { LoggerService } from "./logger";
 
 @singleton()
 export class CommandHandler {
-	private readonly commands: Map<string, ICommand>;
+	private readonly commands: Map<
+		string,
+		ICommand<SlashCommandOptionsOnlyBuilder>
+	>;
 
 	constructor(
 		@inject("DiscordClient") private readonly client: Client,
 		@inject(LoggerService) private readonly logger: LoggerService,
-		@injectAll(CommandToken) commands: ICommand[],
+		@inject(CooldownService) private cooldown: CooldownService,
+		@injectAll(CommandToken)
+		commands: ICommand<SlashCommandOptionsOnlyBuilder>[],
 	) {
-		this.commands = new Map<string, ICommand>();
+		this.commands = new Map<string, ICommand<SlashCommandOptionsOnlyBuilder>>();
 		for (const command of commands) {
 			this.commands.set(command.builder.name, command);
 		}
@@ -43,6 +49,33 @@ export class CommandHandler {
 						content: "I don't have permission to run this command :(",
 						ephemeral: true,
 					});
+				}
+
+				if (command.cooldown) {
+					const subcommand =
+						interaction.options.getSubcommand(false) ?? undefined;
+					const cooldownLengthMs =
+						(subcommand && command.cooldown.subcommands?.[subcommand]) ||
+						command.cooldown.lengthMs ||
+						0;
+
+					if (cooldownLengthMs > 0) {
+						const result = await this.cooldown.check(
+							interaction.user.id,
+							interaction.commandName,
+							cooldownLengthMs,
+							subcommand,
+						);
+
+						if (result.onCooldown) {
+							await interaction.reply({
+								content: `You are on cooldown for another ${Math.ceil(result.remainingMs / 1000)} seconds.`,
+								ephemeral: true,
+							});
+
+							return;
+						}
+					}
 				}
 
 				await interaction.deferReply();
