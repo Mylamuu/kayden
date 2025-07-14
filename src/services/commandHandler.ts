@@ -1,4 +1,4 @@
-import type { Client } from "discord.js";
+import { type Client, MessageFlags } from "discord.js";
 import { inject, injectAll, singleton } from "tsyringe";
 import {
 	CommandToken,
@@ -33,7 +33,7 @@ export class CommandHandler {
 			if (!interaction.inGuild() || !interaction.guild?.members.me) {
 				return interaction.reply({
 					content: "Commands can only be ran within guilds!",
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 				});
 			}
 
@@ -79,7 +79,7 @@ export class CommandHandler {
 		if (!interaction.guild.members.me?.permissions.has(command.permissions)) {
 			return interaction.reply({
 				content: "I don't have permission to run this command :(",
-				ephemeral: true,
+				flags: [MessageFlags.Ephemeral],
 			});
 		}
 
@@ -98,7 +98,7 @@ export class CommandHandler {
 				if (result.onCooldown) {
 					await interaction.reply({
 						content: `You are on cooldown for another ${Math.ceil(result.remainingMs / 1000)} seconds.`,
-						ephemeral: true,
+						flags: [MessageFlags.Ephemeral],
 					});
 
 					return;
