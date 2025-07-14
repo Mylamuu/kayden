@@ -1,8 +1,4 @@
-import type {
-	Client,
-	SlashCommandOptionsOnlyBuilder,
-	SlashCommandSubcommandBuilder,
-} from "discord.js";
+import type { Client } from "discord.js";
 import { inject, injectAll, singleton } from "tsyringe";
 import {
 	CommandToken,
