@@ -16,7 +16,7 @@ async function main() {
 		const registrar = container.resolve(SlashCommandRegistrar);
 		const handler = container.resolve(CommandHandler);
 
-		logger.info(`Logged in as ${client.user!.tag}!`);
+		logger.info(`Logged in as ${client.user?.tag}!`);
 
 		await registrar.registerCommands();
 		handler.initialise();

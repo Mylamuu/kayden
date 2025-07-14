@@ -2,6 +2,7 @@ import { REST } from "@discordjs/rest";
 import { type Client, Routes } from "discord.js";
 import { inject, injectAll, singleton } from "tsyringe";
 import { CommandToken, type ICommand } from "../interfaces/command";
+import { ConfigService } from "./config";
 import { LoggerService } from "./logger";
 
 @singleton()
@@ -11,9 +12,10 @@ export class SlashCommandRegistrar {
 	constructor(
 		@inject("DiscordClient") private readonly client: Client,
 		@inject(LoggerService) private readonly logger: LoggerService,
+		@inject(ConfigService) private readonly config: ConfigService,
 		@injectAll(CommandToken) private readonly commands: ICommand[],
 	) {
-		this.rest = new REST().setToken(process.env.DISCORD_TOKEN!);
+		this.rest = new REST().setToken(config.get("DISCORD_TOKEN"));
 	}
 
 	public async registerCommands() {
@@ -25,10 +27,12 @@ export class SlashCommandRegistrar {
 		try {
 			this.logger.info("Started refreshing application (/) commands.");
 
+			if (!this.client.user?.id) throw new Error("No application ID");
+
 			await this.rest.put(
 				Routes.applicationGuildCommands(
-					this.client.user!.id,
-					process.env.GUILD_ID!,
+					this.client.user.id,
+					this.config.get("GUILD_ID"),
 				),
 				{ body: commandPayload },
 			);
