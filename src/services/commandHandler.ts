@@ -46,7 +46,7 @@ export class CommandHandler {
 			}
 
 			try {
-				await this.handleCommand(interaction);
+				await this.handleCommand(interaction as GuildChatInputCommandInteraction);
 			} catch (err: unknown) {
 				interaction.editReply("There was an error!");
 				this.logger.error("Unable to execute command", err);
@@ -82,20 +82,15 @@ export class CommandHandler {
 		command: ICommand<SlashCommandOptionsOnlyBuilder>,
 		subcommand?: ISubcommand<SlashCommandSubcommandBuilder>,
 	) {
-		// if (!interaction.guild.members.me.permissions.has(command.permissions)
-		// 		) {
-		// 			return interaction.reply({
-		// 				content: "I don't have permission to run this command :(",
-		// 				ephemeral: true,
-		// 			});
-		// 		}
+		if (!interaction.guild.members.me?.permissions.has(command.permissions)) {
+			return interaction.reply({
+				content: "I don't have permission to run this command :(",
+				ephemeral: true,
+			});
+		}
 
-		if (command.cooldown) {
-			const cooldownLengthMs =
-				(subcommand &&
-					command.cooldown.subcommands?.[subcommand.builder.name]) ||
-				command.cooldown.lengthMs ||
-				0;
+		if (command.cooldownMs || subcommand?.cooldownMs) {
+			const cooldownLengthMs = subcommand?.cooldownMs || command.cooldownMs || 0;
 
 			if (cooldownLengthMs > 0) {
 				const result = await this.cooldown.check(

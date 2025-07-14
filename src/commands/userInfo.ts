@@ -7,7 +7,6 @@ import { Command } from "../decorators/command";
 import type {
 	GuildChatInputCommandInteraction,
 	ICommand,
-	ICommandCooldown,
 } from "../interfaces/command";
 
 const builder = new SlashCommandBuilder()
@@ -24,9 +23,7 @@ const builder = new SlashCommandBuilder()
 export class UserInfoCommand implements ICommand<typeof builder> {
 	public readonly builder = builder;
 	public readonly permissions = new PermissionsBitField(["SendMessages"]);
-	public readonly cooldown: ICommandCooldown<typeof builder> = {
-		lengthMs: 10_000,
-	};
+	public readonly cooldownMs = 10_000;
 
 	public async execute(
 		interaction: GuildChatInputCommandInteraction,
