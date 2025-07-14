@@ -1,6 +1,8 @@
 import { inject, singleton } from "tsyringe";
 import { DataSource } from "typeorm";
 import { CooldownEntity } from "../entities/cooldown";
+import { GuildConfigEntity } from "../entities/guildConfig";
+import { PunishmentEntity } from "../entities/punishment";
 import { ConfigService } from "./config";
 import { LoggerService } from "./logger";
 
@@ -18,7 +20,7 @@ export class DatabaseService {
 			type: "postgres",
 			url: this.config.get("DATABASE_URL"),
 			synchronize: this.config.get("NODE_ENV") === "development",
-			entities: [CooldownEntity],
+			entities: [CooldownEntity, GuildConfigEntity, PunishmentEntity],
 		});
 
 		this._dataSource = await ds.initialize();

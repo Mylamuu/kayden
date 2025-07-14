@@ -4,7 +4,7 @@ import {
 	SlashCommandBuilder,
 	type SlashCommandOptionsOnlyBuilder,
 } from "discord.js";
-import { container, injectAll } from "tsyringe";
+import { container } from "tsyringe";
 import { Command } from "../decorators/command";
 import { CommandToken, type ICommand } from "../interfaces/command";
 
