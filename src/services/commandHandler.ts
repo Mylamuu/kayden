@@ -1,13 +1,16 @@
 import { inject, injectAll, singleton } from "tsyringe";
 import { CommandToken, type ICommand } from "../interfaces/command";
 import type { Client } from "discord.js";
+import { LoggerService } from "./logger";
 
 @singleton()
 export class CommandHandler {
     private readonly client: Client;
     private readonly commands: Map<string, ICommand>;
 
-    constructor(@inject("DiscordClient") client: Client, @injectAll(CommandToken) commands: ICommand[]) {
+    constructor(@inject("DiscordClient") client: Client,
+    @inject(LoggerService) private logger: LoggerService,
+    @injectAll(CommandToken) commands: ICommand[]) {
         this.client = client;
         this.commands = new Map<string, ICommand>();
 
@@ -32,7 +35,7 @@ export class CommandHandler {
                 await command.execute(interaction);
             } catch (err: unknown) {
                 interaction.editReply("There was an error!");
-                console.error(err);
+                this.logger.error("Unable to execute command", err);
             }
         });
     }
