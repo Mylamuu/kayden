@@ -17,7 +17,7 @@ export class ConfigService {
 		if (!parsed.success) {
 			this.logger.error(
 				"Invalid environment variables:",
-				JSON.stringify(parsed.error.flatten().fieldErrors, null, 2),
+				parsed.error.flatten().fieldErrors,
 			);
 
 			throw new Error("Invalid environment variables.");

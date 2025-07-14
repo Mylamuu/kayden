@@ -19,6 +19,9 @@ export const configSchema = z.object({
 			/(?<mfaToken>mfa\.[a-z0-9_-]{20,})|(?<basicToken>[a-z0-9_-]{23,28}\.[a-z0-9_-]{6,7}\.[a-z0-9_-]{27})/i,
 		),
 	GUILD_ID: z.string(),
+	DATABASE_URL: z
+		.url()
+		.startsWith("postgres://", "This project only supports postgres databases"),
 });
 
 export type Config = z.infer<typeof configSchema>;

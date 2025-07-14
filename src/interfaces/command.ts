@@ -1,8 +1,9 @@
-import type { CommandInteraction } from "discord.js";
+import type { CommandInteraction, PermissionsBitField } from "discord.js";
 
 export interface ICommand {
 	name: string;
 	description: string;
+	permissions: PermissionsBitField;
 	execute: (interaction: CommandInteraction) => Promise<void>;
 }
 

@@ -1,4 +1,8 @@
-import { type CommandInteraction, EmbedBuilder } from "discord.js";
+import {
+	type CommandInteraction,
+	EmbedBuilder,
+	PermissionsBitField,
+} from "discord.js";
 import { Command } from "../decorators/command";
 import type { ICommand } from "../interfaces/command";
 
@@ -6,6 +10,7 @@ import type { ICommand } from "../interfaces/command";
 export class UserInfoCommand implements ICommand {
 	public readonly name = "userinfo";
 	public readonly description = "Displays information about the user.";
+	public readonly permissions = new PermissionsBitField(["SendMessages"]);
 
 	public async execute(interaction: CommandInteraction): Promise<void> {
 		const embed = new EmbedBuilder()
