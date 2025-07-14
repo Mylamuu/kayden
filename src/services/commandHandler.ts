@@ -1,5 +1,4 @@
 import type {
-	ChatInputCommandInteraction,
 	Client,
 	SlashCommandOptionsOnlyBuilder,
 	SlashCommandSubcommandBuilder,
