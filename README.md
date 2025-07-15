@@ -1,15 +1,18 @@
-# kayden
+# Kayden
 
-To install dependencies:
+An advanced infraction based moderation bot for Discord 
 
-```bash
-bun install
-```
+> [!WARNING]  
+> In very early development and not really ready to be used for anything.
 
-To run:
+## Roadmap
 
-```bash
-bun run src/index.ts
-```
+Right now, I'm just working on the basic framework for assembling the features of the bot.
 
-This project was created using `bun init` in bun v1.2.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- [x] A way to get environment variables
+- [x] Database connection & logger
+- [x] Command handling & registering
+- [x] Command cooldowns
+- [x] Modal support
+- [ ] Event handler
+- [ ] Some kind of uniform response system using embeds
