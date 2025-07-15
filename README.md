@@ -13,6 +13,7 @@ Right now, I'm just working on the basic framework for assembling the features o
 - [x] Database connection & logger
 - [x] Command handling & registering
 - [x] Command cooldowns
+- [x] Subcommands
 - [x] Modal support
 - [ ] Event handler
 - [ ] Some kind of uniform response system using embeds
