@@ -1,14 +1,18 @@
 // src/services/LoggerService.ts
-import { singleton } from "tsyringe";
+import { container, singleton } from "tsyringe";
 import winston, { format, transports } from "winston";
+import { ConfigService } from "./config";
 
 @singleton()
 export class LoggerService {
 	private readonly logger: winston.Logger;
 
 	constructor() {
+		// const config = container.resolve(ConfigService);
+
 		this.logger = winston.createLogger({
-			level: "info",
+			// level: config.get("LOG_LEVEL"),
+			level: "debug",
 			format: format.combine(
 				format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
 				format.errors({ stack: true }),

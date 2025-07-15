@@ -1,21 +1,16 @@
 import type {
 	ChatInputCommandInteraction,
 	PermissionsBitField,
+	SlashCommandBuilder,
 	SlashCommandOptionsOnlyBuilder,
-	SlashCommandSubcommandBuilder,
 } from "discord.js";
+import type { ISubcommand } from "./subcommand";
 
 export type GuildChatInputCommandInteraction =
 	ChatInputCommandInteraction<"cached">;
 
-export interface ISubcommand {
-	builder: SlashCommandSubcommandBuilder;
-	cooldownMs?: number;
-	execute: (interaction: GuildChatInputCommandInteraction) => Promise<void>;
-}
-
 export interface ICommand {
-	builder: SlashCommandOptionsOnlyBuilder;
+	builder: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
 	permissions: PermissionsBitField;
 	cooldownMs?: number;
 	subcommands?: ISubcommand[];

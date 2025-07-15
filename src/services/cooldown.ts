@@ -24,14 +24,12 @@ export class CooldownService {
 		userId: string,
 		commandName: string,
 		cooldownMs: number,
-		subcommandName?: string,
 	): Promise<Cooldown> {
 		const now = new Date();
 
 		const existingCooldown = await this.cooldownRepository.findOneBy({
 			userId,
 			commandName,
-			subcommandName,
 		});
 
 		if (existingCooldown) {
@@ -57,13 +55,11 @@ export class CooldownService {
 		const newCooldown = await this.cooldownRepository.save({
 			userId,
 			commandName,
-			subcommandName,
 		});
 
 		this.logger.info("Created new cooldown", [
 			{
 				commandName,
-				subcommandName,
 				userId,
 				cooldownId: newCooldown.id,
 			},
