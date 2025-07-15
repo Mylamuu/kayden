@@ -1,0 +1,49 @@
+import type { Client } from "discord.js";
+import { inject, injectAll, singleton } from "tsyringe";
+import { type IModal, type ModalID, ModalToken } from "../interfaces/modal";
+import { LoggerService } from "./logger";
+
+@singleton()
+export class ModalService {
+	private readonly modals: Map<string, IModal>;
+
+	constructor(
+		@inject("DiscordClient") private readonly client: Client,
+		@inject(LoggerService) private readonly logger: LoggerService,
+		@injectAll(ModalToken) private readonly resolvedModals: IModal[],
+	) {
+		this.modals = new Map<string, IModal>();
+
+		for (const modal of resolvedModals) {
+			const json = modal.builder.toJSON();
+			this.modals.set(json.custom_id, modal);
+
+			logger.debug(`Registered modal with custom ID '${json.custom_id}'`);
+		}
+		logger.info(`Registered ${this.modals.size} modals`);
+
+		client.on("interactionCreate", async (interaction) => {
+			if (interaction.isModalSubmit()) {
+				const modal = this.modals.get(interaction.customId);
+
+				if (!modal) {
+					logger.warn(
+						`Modal with ID '${interaction.customId}' was submitted but cannot be found.`,
+					);
+					return;
+				}
+
+				await interaction.deferReply();
+				await modal.submission(interaction);
+			}
+		});
+	}
+
+	get(modalId: ModalID) {
+		if (!this.modals.has(modalId))
+			throw new Error("Attempting to get a modal that hasn't been registered");
+
+		// biome-ignore lint/style/noNonNullAssertion: Checked if it exists above.
+		return this.modals.get(modalId)!.builder.toJSON();
+	}
+}

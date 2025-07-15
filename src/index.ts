@@ -3,10 +3,11 @@ import { Client, GatewayIntentBits } from "discord.js";
 import { container } from "tsyringe";
 import { CommandHandler } from "./services/commandHandler";
 import { SlashCommandRegistrar } from "./services/commandRegister";
+import { DatabaseService } from "./services/database";
 import { LoggerService } from "./services/logger";
 
 import "./commands";
-import { DatabaseService } from "./services/database";
+import "./modals";
 
 async function main() {
 	const client = new Client({ intents: [GatewayIntentBits.Guilds] });

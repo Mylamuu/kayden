@@ -9,6 +9,7 @@ export interface ISubcommand {
 	permissions: PermissionsBitField;
 	builder: SlashCommandSubcommandBuilder;
 	cooldownMs?: number;
+	dontDefer?: boolean;
 
 	execute: (interaction: GuildChatInputCommandInteraction) => Promise<void>;
 }

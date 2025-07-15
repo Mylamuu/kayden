@@ -132,7 +132,10 @@ export class CommandHandler {
 			}
 		}
 
-		await interaction.deferReply();
+		if (!command.dontDefer) {
+			await interaction.deferReply();
+		}
+
 		await command.execute(interaction);
 	}
 }
