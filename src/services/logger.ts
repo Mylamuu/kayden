@@ -1,7 +1,6 @@
 // src/services/LoggerService.ts
-import { container, singleton } from "tsyringe";
+import { singleton } from "tsyringe";
 import winston, { format, transports } from "winston";
-import { ConfigService } from "./config";
 
 @singleton()
 export class LoggerService {
