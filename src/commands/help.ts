@@ -6,6 +6,7 @@ import {
 import { container, inject } from "tsyringe";
 import { Command } from "../decorators/command";
 import {
+	CommandName,
 	CommandToken,
 	type GuildChatInputCommandInteraction,
 	type ICommand,
@@ -16,7 +17,7 @@ import { GuildService } from "../services/guild";
 @Command()
 export class HelpCommand implements ICommand {
 	public readonly builder = new SlashCommandBuilder()
-		.setName("help")
+		.setName(CommandName.Help)
 		.setDescription("List every command (this is just a test)");
 	public readonly permissions = new PermissionsBitField(["SendMessages"]);
 

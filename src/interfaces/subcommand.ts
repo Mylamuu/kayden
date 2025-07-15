@@ -2,10 +2,16 @@ import type {
 	PermissionsBitField,
 	SlashCommandSubcommandBuilder,
 } from "discord.js";
-import type { GuildChatInputCommandInteraction } from "./command";
+import type { CommandName, GuildChatInputCommandInteraction } from "./command";
+
+export enum SubcommandName {
+	AddPunishment = "add",
+	RemovePunishment = "remove",
+	ModifyPunishment = "modify",
+}
 
 export interface ISubcommand {
-	parentCommandName: string;
+	parentCommandName: CommandName;
 	permissions: PermissionsBitField;
 	builder: SlashCommandSubcommandBuilder;
 	cooldownMs?: number;

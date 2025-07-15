@@ -4,15 +4,16 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Command } from "../decorators/command";
-import type {
-	GuildChatInputCommandInteraction,
-	ICommand,
+import {
+	CommandName,
+	type GuildChatInputCommandInteraction,
+	type ICommand,
 } from "../interfaces/command";
 
 @Command()
 export class UserInfoCommand implements ICommand {
 	public readonly builder = new SlashCommandBuilder()
-		.setName("user-info")
+		.setName(CommandName.UserInfo)
 		.setDescription("Get the information of a user")
 		.addUserOption((opt) =>
 			opt

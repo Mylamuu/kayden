@@ -6,6 +6,12 @@ import type {
 } from "discord.js";
 import type { ISubcommand } from "./subcommand";
 
+export enum CommandName {
+	Help = "help",
+	UserInfo = "user-info",
+	Punishments = "punishments",
+}
+
 export type GuildChatInputCommandInteraction =
 	ChatInputCommandInteraction<"cached">;
 
