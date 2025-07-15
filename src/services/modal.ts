@@ -18,9 +18,9 @@ export class ModalService {
 			const json = modal.builder.toJSON();
 			this.modals.set(json.custom_id, modal);
 
-			logger.debug(`Registered modal with custom ID '${json.custom_id}'`);
+			logger.debug(`Registered modal with custom ID '${json.custom_id}'.`);
 		}
-		logger.info(`Registered ${this.modals.size} modals`);
+		logger.info(`Registered ${this.modals.size} modals.`);
 
 		client.on("interactionCreate", async (interaction) => {
 			if (interaction.isModalSubmit()) {
