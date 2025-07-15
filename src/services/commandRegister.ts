@@ -39,7 +39,7 @@ export class SlashCommandRegistrar {
 			for (const subcommand of associatedSubcommands) {
 				if (parentBuilder instanceof SlashCommandBuilder) {
 					this.logger.debug(
-						`Adding subcommand '${subcommand.builder.name}' onto '${parentBuilder.name}.'`,
+						`Adding subcommand '${subcommand.builder.name}' onto '${parentBuilder.name}'.`,
 					);
 					parentBuilder.addSubcommand(subcommand.builder);
 					continue;

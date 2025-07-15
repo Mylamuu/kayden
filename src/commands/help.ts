@@ -10,6 +10,7 @@ import {
 	type GuildChatInputCommandInteraction,
 	type ICommand,
 } from "../interfaces/command";
+import { type ISubcommand, SubcommandToken } from "../interfaces/subcommand";
 import { GuildService } from "../services/guild";
 
 @Command()
@@ -27,12 +28,35 @@ export class HelpCommand implements ICommand {
 		const guildConfig = await this.guilds.get(interaction.guildId);
 
 		const commands: ICommand[] = container.resolveAll(CommandToken);
+		const subcommands: ISubcommand[] = container.resolveAll(SubcommandToken);
+
+		const subcommandsByParent = subcommands.reduce((acc, subcommand) => {
+			const parentName = subcommand.parentCommandName;
+			if (!acc.has(parentName)) {
+				acc.set(parentName, []);
+			}
+
+			acc.get(parentName)?.push(subcommand);
+			return acc;
+		}, new Map<string, ISubcommand[]>());
 
 		const message = commands
-			.map(
-				(command) =>
+			.reduce((acc, command) => {
+				const subcmds = subcommandsByParent.get(command.builder.name);
+				acc.push(
 					`- **${command.builder.name}**: ${command.builder.description}`,
-			)
+				);
+
+				if (subcmds) {
+					for (const subcmd of subcmds) {
+						acc.push(
+							`    - **${subcmd.builder.name}**: ${subcmd.builder.description}`,
+						);
+					}
+				}
+
+				return acc;
+			}, [] as string[])
 			.join("\n");
 
 		const embed = new EmbedBuilder()
