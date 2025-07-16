@@ -52,7 +52,7 @@ export class CooldownService {
 					{ userId, cooldownId: existingCooldown.id },
 				]);
 
-				this.deleteCooldown(existingCooldown.id);
+				await this.deleteCooldown(existingCooldown.id);
 			}
 		}
 
