@@ -1,4 +1,5 @@
 # Kayden
+[![Biome CI](https://github.com/Mylamuu/kayden/actions/workflows/ci.yml/badge.svg)](https://github.com/Mylamuu/kayden/actions/workflows/ci.yml)<br/>
 
 An advanced infraction based moderation bot for Discord 
 
@@ -12,7 +13,7 @@ Right now, I'm just working on the basic framework for assembling the features o
 - [x] A way to get environment variables
 - [x] Database connection & logger
 - [x] Command handling & registering
-- [x] Command cooldowns
+- [x] Command cooldowns (database & in-memory)
 - [x] Subcommands
 - [x] Modal support
 - [x] Zod validation for modals
