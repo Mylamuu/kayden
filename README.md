@@ -17,6 +17,6 @@ Right now, I'm just working on the basic framework for assembling the features o
 - [x] Modal support
 - [x] Zod validation for modals
 - [x] Event handler
-- [ ] Some kind of uniform response system using embeds
+- [x] Some kind of uniform response system using embeds
 - [ ] Automatically load commands, modals and events
 - [ ] Error handler

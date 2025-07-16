@@ -22,6 +22,7 @@ export const configSchema = z.object({
 	DATABASE_URL: z
 		.url()
 		.startsWith("postgres://", "This project only supports postgres databases"),
+	BRAND_COLOUR: z.string(),
 });
 
 export type Config = z.infer<typeof configSchema>;

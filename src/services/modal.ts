@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prettifyError } from "zod/v4";
 import { type IModal, type ModalID, ModalToken } from "../interfaces/modal";
 import { LoggerService } from "./logger";
+import { ResponseHandler } from "./responseHandler";
 
 @singleton()
 export class ModalService {
@@ -11,6 +12,7 @@ export class ModalService {
 
 	constructor(
 		@inject("DiscordClient") private readonly client: Client,
+		@inject(ResponseHandler) private readonly responseHandler: ResponseHandler,
 		@inject(LoggerService) private readonly logger: LoggerService,
 		@injectAll(ModalToken) private readonly resolvedModals: IModal[],
 	) {
@@ -57,7 +59,7 @@ export class ModalService {
 
 				if (!result.success) {
 					const errorMessage = prettifyError(result.error);
-					await interaction.editReply({ content: errorMessage });
+					await this.responseHandler.error(interaction, errorMessage);
 					return;
 				}
 
