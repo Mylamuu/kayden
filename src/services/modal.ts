@@ -1,5 +1,7 @@
-import type { Client } from "discord.js";
+import { type Client, ComponentType } from "discord.js";
 import { inject, injectAll, singleton } from "tsyringe";
+import { z } from "zod";
+import { prettifyError } from "zod/v4";
 import { type IModal, type ModalID, ModalToken } from "../interfaces/modal";
 import { LoggerService } from "./logger";
 
@@ -34,7 +36,35 @@ export class ModalService {
 				}
 
 				await interaction.deferReply();
-				await modal.submission(interaction);
+
+				const fields: { [key: string]: unknown } = {};
+				for (const actionRow of interaction.components) {
+					for (const textInput of actionRow.components) {
+						// This is the only type that can be in a modal as of right now.
+						// If this changes, we will need to update this check, but I'm keeping it
+						// here just so future updates doesn't break everything :D
+						if (textInput.type !== ComponentType.TextInput) continue;
+
+						const value = interaction.fields.getTextInputValue(
+							textInput.customId,
+						);
+
+						fields[textInput.customId] = value;
+					}
+				}
+
+				const result = await z.safeParseAsync(modal.schema, fields);
+
+				if (!result.success) {
+					const errorMessage = prettifyError(result.error);
+					await interaction.editReply({ content: errorMessage });
+					return;
+				}
+
+				await modal.submission(
+					interaction,
+					result.data as z.infer<typeof modal.schema>,
+				);
 			}
 		});
 	}
