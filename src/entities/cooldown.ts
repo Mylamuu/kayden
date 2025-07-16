@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 @Entity({ name: "cooldowns" })
-@Unique(["userId", "commandName", "subcommandName"])
+@Unique(["userId", "commandName"])
 export class CooldownEntity {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
@@ -17,9 +17,6 @@ export class CooldownEntity {
 
 	@Column()
 	commandName: string;
-
-	@Column({ nullable: true })
-	subcommandName: string;
 
 	@CreateDateColumn()
 	createdAt: Date;
